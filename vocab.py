@@ -47,6 +47,6 @@ class Vocab(object):
 
 
 if __name__ == "__main__":
-    _train_file = "data/traintUnk.txt"
+    _train_file = "data/trainUnk.txt"
     _test_file = "data/testUnk.txt"
     v = Vocab(_train_file, _test_file)

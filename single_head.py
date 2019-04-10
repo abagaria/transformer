@@ -19,8 +19,8 @@ class SingleHeadedAttention(nn.Module):
         self.dataset = dataset  # TODO
 
         # Collin's equation: softmax( QA (Q' + mask) ) QB
-        self.A = torch.randn(embedding_size, embedding_size, requires_grad=True, device=device)
-        self.B = torch.randn(embedding_size, hidden_size, requires_grad=True, device=device)
+        self.A = torch.rand(embedding_size, embedding_size, requires_grad=True, device=device)
+        self.B = torch.rand(embedding_size, hidden_size, requires_grad=True, device=device)
         self.softmax = nn.Softmax(dim=1)
 
         self.to(device)
