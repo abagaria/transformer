@@ -29,7 +29,7 @@ class LanguageModel(nn.Module):
         self.to(device)
 
     def forward(self, word_ids):
-        position_ids = torch.arange(start=0, end=self.window_size-1, dtype=torch.long)
+        position_ids = torch.arange(start=0, end=self.window_size-1, dtype=torch.long, device=self.device)
         word_embeddings = self.word_embedding(word_ids)
         position_embeddings = self.position_embedding(position_ids)
 
