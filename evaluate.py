@@ -17,6 +17,7 @@ def evaluate(sentences, vocab, reverse_vocab, hy, device):
     dataset = LMDataset(sentences, vocab, reverse_vocab, hy.window_size)
     loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=True, drop_last=True)
     vocab_size = len(vocab.keys())
+    print("Loaded vocab of size {} for evaluation".format(vocab_size))
 
     model = LanguageModel(vocab_size, hy.embed_size, hy.window_size, hy.hidden_size, device, dataset)
 
@@ -29,7 +30,7 @@ def evaluate(sentences, vocab, reverse_vocab, hy, device):
 
     print("=" * 80)
     print("Evaluation metrics:")
-    print("Final perplexity = {:.2f}".format(np.max(perplexities)))
+    print("Final perplexity = {:.2f}".format(np.min(perplexities)))
     print("=" * 80)
 
     return perplexities
