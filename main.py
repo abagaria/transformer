@@ -18,7 +18,9 @@ def load_vocab():
 
 
 def create_vocab():
-    Vocab(args.train_file, args.test_file)
+    vocab_object = Vocab(args.train_file, args.test_file)
+    vocab, reverse_vocab = vocab_object.vocab, vocab_object.reverse_vocab
+    return vocab, reverse_vocab
 
 
 def main():
@@ -30,8 +32,7 @@ def main():
     sentences = get_sentences(args.train_file)
     test_sentences = get_sentences(args.test_file)
 
-    create_vocab()
-    vocab, reverse_vocab = load_vocab()
+    vocab, reverse_vocab = create_vocab()
     print("Loaded vocab of size {}".format(len(vocab)))
 
     model, train_perplexity = train(sentences, vocab, reverse_vocab, hy, writer, device)
