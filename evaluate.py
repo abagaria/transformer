@@ -56,7 +56,7 @@ def compute_model_accuracy(model, loader, device, epoch, writer):
         with torch.no_grad():
             logits = model(input_seq)
             loss = loss_function(logits, label_seq.squeeze(0))
-        loss_history.append(loss.item())
+            loss_history.append(loss.item())
 
         if writer is not None:
             writer.add_scalar("TestingLoss", loss.item(), n_iterations)
