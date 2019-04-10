@@ -1,20 +1,11 @@
 import argparse
 import torch
-import pickle
 from train import train
 from hyperparameters import Hyperparameters
 from tensorboardX import SummaryWriter
 from evaluate import evaluate
 from utils import *
 from vocab import Vocab
-
-
-def load_vocab():
-    with open("vocab.pkl", "rb") as f:
-        vocab = pickle.load(f)
-    with open("inverse_vocab.pkl", "rb") as f:
-        reverse_vocab = pickle.load(f)
-    return vocab, reverse_vocab
 
 
 def create_vocab():
