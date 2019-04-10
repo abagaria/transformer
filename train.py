@@ -29,27 +29,23 @@ def train(sentences, vocab, reverse_vocab, hy, writer, device):
 
     model.train()
 
-    for epoch in range(1, hy.num_epochs + 1):
-        for input_seq, label_seq in tqdm(loader):
+    for input_seq, label_seq in tqdm(loader):
 
-            # Move the data to the GPU
-            input_seq = input_seq.to(device)
-            label_seq = label_seq.to(device)
+        # Move the data to the GPU
+        input_seq = input_seq.to(device)
+        label_seq = label_seq.to(device)
 
-            optimizer.zero_grad()
-            logits = model(input_seq)
-            loss = loss_function(logits, label_seq.squeeze(0))
-            loss.backward()
-            optimizer.step()
+        optimizer.zero_grad()
+        logits = model(input_seq)
+        loss = loss_function(logits, label_seq.squeeze(0))
+        loss.backward()
+        optimizer.step()
 
-            if writer is not None:
-                writer.add_scalar("TrainingLoss", loss.item(), n_iterations)
+        if writer is not None:
+            writer.add_scalar("TrainingLoss", loss.item(), n_iterations)
 
-            n_iterations = n_iterations + 1
-            loss_history.append(loss.item())
-
-        # training_accuracy = compute_model_accuracy(model, loader, device, epoch, writer)
-        torch.save(model.state_dict(), "saved_runs/transformer_{}_weights.pt".format(epoch))
+        n_iterations = n_iterations + 1
+        loss_history.append(loss.item())
 
     perplexity = np.exp(np.mean(loss_history))
-    return perplexity
+    return model, perplexity

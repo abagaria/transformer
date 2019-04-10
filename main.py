@@ -34,10 +34,10 @@ def main():
     vocab, reverse_vocab = load_vocab()
     print("Loaded vocab of size {}".format(len(vocab)))
 
-    train_perplexity = train(sentences, vocab, reverse_vocab, hy, writer, device)
+    model, train_perplexity = train(sentences, vocab, reverse_vocab, hy, writer, device)
     print("Training perplexity = {}".format(train_perplexity))
 
-    evaluate(test_sentences, vocab, reverse_vocab, hy, writer, device)
+    evaluate(model, test_sentences, vocab, reverse_vocab, hy, writer, device)
 
 
 if __name__ == "__main__":

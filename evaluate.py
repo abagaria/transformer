@@ -13,18 +13,15 @@ from dataset import LMDataset
 from model import LanguageModel
 
 
-def evaluate(sentences, vocab, reverse_vocab, hy, writer, device):
+def evaluate(model, sentences, vocab, reverse_vocab, hy, writer, device):
     dataset = LMDataset(sentences, vocab, reverse_vocab, hy.window_size)
-    loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=False, drop_last=True)
+    loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=True, drop_last=True)
     vocab_size = len(vocab.keys())
     print("Loaded vocab of size {} for evaluation".format(vocab_size))
-
-    model = LanguageModel(vocab_size, hy.embed_size, hy.window_size, hy.hidden_size, device, dataset)
 
     perplexities = []
 
     for epoch in range(1, hy.num_epochs + 1):
-        model.load_state_dict(torch.load("saved_runs/transformer_{}_weights.pt".format(epoch)))
         perplexity = compute_model_accuracy(model, loader, device, epoch, writer)
         perplexities.append(perplexity)
 
