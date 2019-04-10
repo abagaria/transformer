@@ -37,7 +37,7 @@ def main():
     train_perplexity = train(sentences, vocab, reverse_vocab, hy, writer, device)
     print("Training perplexity = {}".format(train_perplexity))
 
-    evaluate(test_sentences, vocab, reverse_vocab, hy, device)
+    evaluate(test_sentences, vocab, reverse_vocab, hy, writer, device)
 
 
 if __name__ == "__main__":

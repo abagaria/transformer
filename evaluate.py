@@ -13,9 +13,9 @@ from dataset import LMDataset
 from model import LanguageModel
 
 
-def evaluate(sentences, vocab, reverse_vocab, hy, device):
+def evaluate(sentences, vocab, reverse_vocab, hy, writer, device):
     dataset = LMDataset(sentences, vocab, reverse_vocab, hy.window_size)
-    loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=True, drop_last=True)
+    loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=False, drop_last=True)
     vocab_size = len(vocab.keys())
     print("Loaded vocab of size {} for evaluation".format(vocab_size))
 
@@ -25,7 +25,7 @@ def evaluate(sentences, vocab, reverse_vocab, hy, device):
 
     for epoch in range(1, hy.num_epochs + 1):
         model.load_state_dict(torch.load("saved_runs/transformer_{}_weights.pt".format(epoch)))
-        perplexity = compute_model_accuracy(model, loader, device, epoch)
+        perplexity = compute_model_accuracy(model, loader, device, epoch, writer)
         perplexities.append(perplexity)
 
     print("=" * 80)
@@ -36,8 +36,9 @@ def evaluate(sentences, vocab, reverse_vocab, hy, device):
     return perplexities
 
 
-def compute_model_accuracy(model, loader, device, epoch):
+def compute_model_accuracy(model, loader, device, epoch, writer):
     loss_history = []
+    n_iterations = 0
 
     # Using loss function to compute perplexity
     loss_function = nn.CrossEntropyLoss().to(device)
@@ -56,6 +57,10 @@ def compute_model_accuracy(model, loader, device, epoch):
             logits = model(input_seq)
             loss = loss_function(logits, label_seq.squeeze(0))
         loss_history.append(loss.item())
+
+        if writer is not None:
+            writer.add_scalar("TestingLoss", loss.item(), n_iterations)
+            n_iterations = n_iterations + 1
 
     perplexity = np.exp(np.mean(loss_history))
 

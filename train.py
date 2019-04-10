@@ -16,7 +16,7 @@ from model import LanguageModel
 
 def train(sentences, vocab, reverse_vocab, hy, writer, device):
     dataset = LMDataset(sentences, vocab, reverse_vocab, hy.window_size)
-    loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=True, drop_last=True)
+    loader = DataLoader(dataset, batch_size=hy.batch_size, shuffle=False, drop_last=True)
 
     vocab_size = len(vocab.keys())
     model = LanguageModel(vocab_size, hy.embed_size, hy.window_size, hy.hidden_size, device, dataset)
