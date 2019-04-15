@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 
 # Other imports.
-from single_head import SingleHeadedAttention
+from multi_head import MultiHeadedAttention
 
 
 class LanguageModel(nn.Module):
@@ -22,7 +22,7 @@ class LanguageModel(nn.Module):
 
         self.word_embedding = nn.Embedding(vocab_size, embedding_size)
         self.position_embedding = nn.Embedding(window_size, embedding_size)
-        self.single_headed_attention = SingleHeadedAttention(window_size, embedding_size, hidden_size, device, dataset)
+        self.multi_headed_attention = MultiHeadedAttention(window_size, embedding_size, hidden_size, device, dataset)
         self.norm = nn.LayerNorm(hidden_size)
         self.classifier = nn.Sequential(
             nn.Linear(hidden_size, hidden_size * 2),
@@ -38,7 +38,7 @@ class LanguageModel(nn.Module):
         position_embeddings = self.position_embedding(position_ids)
 
         input_embeddings = word_embeddings + position_embeddings.unsqueeze(0)
-        hidden = self.single_headed_attention(input_embeddings)
+        hidden = self.multi_headed_attention(input_embeddings)
         skip = hidden + input_embeddings.squeeze(0)
         skipped_normed = self.norm(skip)
         logits = self.classifier(skipped_normed)
