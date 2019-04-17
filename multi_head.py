@@ -19,10 +19,10 @@ class MultiHeadedAttention(nn.Module):
         self.device = device
         self.dataset = dataset  # TODO
 
-        self.sha1 = SingleHeadedAttention(window_size, embedding_size, hidden_size, device, dataset)
-        self.sha2 = SingleHeadedAttention(window_size, embedding_size, hidden_size, device, dataset)
-        self.sha3 = SingleHeadedAttention(window_size, embedding_size, hidden_size, device, dataset)
-        self.lin1 = nn.Linear(3 * hidden_size, hidden_size)
+        self.sha1 = SingleHeadedAttention(window_size, embedding_size, hidden_size // 3, device, dataset)
+        self.sha2 = SingleHeadedAttention(window_size, embedding_size, hidden_size // 3, device, dataset)
+        self.sha3 = SingleHeadedAttention(window_size, embedding_size, hidden_size // 3, device, dataset)
+        self.lin1 = nn.Linear(hidden_size, hidden_size)
 
     def forward(self, embedding_matrix):
         x1 = self.sha1(embedding_matrix)

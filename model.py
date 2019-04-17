@@ -25,9 +25,9 @@ class LanguageModel(nn.Module):
         self.multi_headed_attention = MultiHeadedAttention(window_size, embedding_size, hidden_size, device, dataset)
         self.norm = nn.LayerNorm(hidden_size)
         self.classifier = nn.Sequential(
-            nn.Linear(hidden_size, hidden_size * 2),
+            nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),
-            nn.Linear(hidden_size * 2, vocab_size)
+            nn.Linear(hidden_size, vocab_size)
         )
 
         self.to(device)

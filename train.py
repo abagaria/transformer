@@ -22,7 +22,7 @@ def train(sentences, vocab, reverse_vocab, hy, writer, device):
     model = LanguageModel(vocab_size, hy.embed_size, hy.window_size, hy.hidden_size, device, dataset)
 
     loss_function = nn.CrossEntropyLoss().to(device)
-    optimizer = optim.Adam(model.parameters())
+    optimizer = optim.Adam(model.parameters(), lr=hy.lr)
 
     n_iterations = 0
     loss_history = []
