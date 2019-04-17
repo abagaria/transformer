@@ -26,10 +26,16 @@ def main():
     vocab, reverse_vocab = create_vocab()
     print("Loaded vocab of size {}".format(len(vocab)))
 
-    model, train_perplexity = train(sentences, vocab, reverse_vocab, hy, writer, device)
-    print("Training perplexity = {}".format(train_perplexity))
+    test_perplexities = []
 
-    evaluate(model, test_sentences, vocab, reverse_vocab, hy, writer, device)
+    for epoch in range(hy.num_epochs):
+        model, train_perplexity = train(sentences, vocab, reverse_vocab, hy, writer, device)
+        test_perplexity = evaluate(model, test_sentences, vocab, reverse_vocab, hy, writer, device)
+        test_perplexities.append(test_perplexity)
+
+    print("=" * 80)
+    print("Final Test Perplexity = {:.2f}".format(min(test_perplexities)))
+    print("=" * 80)
 
 
 if __name__ == "__main__":

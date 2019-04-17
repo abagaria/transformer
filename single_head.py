@@ -21,8 +21,12 @@ class SingleHeadedAttention(nn.Module):
         # Collin's equation: softmax( QA (Q' + mask) ) QB
         self.A = torch.rand(embedding_size, embedding_size, requires_grad=True, device=device)
         self.B = torch.rand(embedding_size, hidden_size, requires_grad=True, device=device)
-        self.softmax = nn.Softmax(dim=1)
 
+        # Initialize the 2 matrices with He initialization
+        nn.init.kaiming_uniform_(self.A, mode="fan_in")
+        nn.init.kaiming_uniform_(self.B, mode="fan_in")
+
+        self.softmax = nn.Softmax(dim=1)
         self.to(device)
 
     def forward(self, embedding_matrix):

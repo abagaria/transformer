@@ -19,21 +19,12 @@ def evaluate(model, sentences, vocab, reverse_vocab, hy, writer, device):
     vocab_size = len(vocab.keys())
     print("Loaded vocab of size {} for evaluation".format(vocab_size))
 
-    perplexities = []
+    perplexity = compute_model_accuracy(model, loader, device, writer)
 
-    for epoch in range(1, hy.num_epochs + 1):
-        perplexity = compute_model_accuracy(model, loader, device, epoch, writer)
-        perplexities.append(perplexity)
-
-    print("=" * 80)
-    print("Evaluation metrics:")
-    print("Final perplexity = {:.2f}".format(np.min(perplexities)))
-    print("=" * 80)
-
-    return perplexities
+    return perplexity
 
 
-def compute_model_accuracy(model, loader, device, epoch, writer):
+def compute_model_accuracy(model, loader, device, writer):
     loss_history = []
     n_iterations = 0
 
@@ -41,8 +32,6 @@ def compute_model_accuracy(model, loader, device, epoch, writer):
     loss_function = nn.CrossEntropyLoss().to(device)
 
     model.eval()
-
-    print("\rComputing validation accuracy model @ {} epoch..".format(epoch))
 
     for input_seq, label_seq in tqdm(loader):
 
