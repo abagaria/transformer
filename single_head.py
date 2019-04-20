@@ -18,13 +18,9 @@ class SingleHeadedAttention(nn.Module):
         self.device = device
         self.dataset = dataset  # TODO
 
-        # Collin's equation: softmax( QA (Q' + mask) ) QB
-        self.A = torch.rand(embedding_size, embedding_size, requires_grad=True, device=device)
-        self.B = torch.rand(embedding_size, hidden_size, requires_grad=True, device=device)
-
-        # Initialize the 2 matrices with He initialization
-        nn.init.kaiming_uniform_(self.A, mode="fan_in")
-        nn.init.kaiming_uniform_(self.B, mode="fan_in")
+        # Collin's equation: softmax( QAQ' + mask ) QB
+        self.fc1 = nn.Linear(embedding_size, embedding_size)
+        self.fc2 = nn.Linear(embedding_size, hidden_size)
 
         self.softmax = nn.Softmax(dim=1)
         self.to(device)
@@ -37,9 +33,9 @@ class SingleHeadedAttention(nn.Module):
         # Need to remove the batch dimension because of the way we are doing A and B
         embedding_matrix = embedding_matrix.squeeze(0)
 
-        x = (embedding_matrix @ self.A @ embedding_matrix.t())
+        x = self.fc1(embedding_matrix) @ embedding_matrix.t()
         mask = torch.tril(x)
         mask = mask.masked_fill(mask == 0, -np.inf)
         x = x + mask
-        x = self.softmax(x) @ embedding_matrix @ self.B
+        x = self.softmax(x) @ self.fc2(embedding_matrix)
         return x
