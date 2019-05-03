@@ -2,6 +2,8 @@
 import pdb
 from collections import defaultdict
 import pickle
+import numpy as np
+from copy import deepcopy
 
 # PyTorch imports.
 import torch
@@ -22,6 +24,9 @@ class LMDataset(Dataset):
             reverse_vocab (defaultdict)
             window_length (int)
         """
+        np.random.seed(0)
+        torch.manual_seed(0)
+
         self.vocab = vocab
         self.reverse_vocab = reverse_vocab
         self.sentences = sentences
@@ -52,19 +57,31 @@ class LMDataset(Dataset):
     def __getitem__(self, i):
         sub_string = self.training_data[i]
 
-        # Input doesn't include the last element and label doesn't include the first element.
-        input_sub_string = sub_string[:-1]
-        label_sub_string = sub_string[1:]
+        input_sub_string = deepcopy(sub_string)
+        label_sub_string = deepcopy(sub_string)
 
         # Convert strings to list of word ids.
         input_sequence = [self.vocab[word] for word in input_sub_string]
         label_sequence = [self.vocab[word] for word in label_sub_string]
 
+        random_seq1 = np.random.uniform(0., 1., size=len(input_sequence))
+        chosen_idx = [idx for idx, num in enumerate(random_seq1) if num < 0.15]
+        random_seq2 = np.random.uniform(0., 1., size=len(chosen_idx))
+        mask_idx = [chosen_idx[idx] for idx, num in enumerate(random_seq2) if num < 0.8]
+        replace_idx = [chosen_idx[idx] for idx, num in enumerate(random_seq2) if 0.8 < num < 0.9]
+
+        for mask_id in mask_idx:
+            input_sequence[mask_id] = self.vocab["<MASK>"]
+
+        for replace_id in replace_idx:
+            input_sequence[replace_id] = np.random.randint(0, len(self.vocab))
+
         # Eventually we want to return tensors from the dataset class.
         input_tensor = torch.tensor(input_sequence, dtype=torch.long)
         label_tensor = torch.tensor(label_sequence, dtype=torch.long)
+        chosen_tensor = torch.tensor(chosen_idx, dtype=torch.long)
 
-        return input_tensor, label_tensor
+        return input_tensor, label_tensor, chosen_tensor
 
     def decode_line(self, word_ids):
         sentence = []

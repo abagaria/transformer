@@ -29,15 +29,16 @@ def train(sentences, vocab, reverse_vocab, hy, writer, device):
 
     model.train()
 
-    for input_seq, label_seq in tqdm(loader):
+    for input_seq, label_seq, mask_idx in tqdm(loader):
 
         # Move the data to the GPU
         input_seq = input_seq.to(device)
         label_seq = label_seq.to(device)
+        mask_idx = mask_idx.to(device).squeeze(0)
 
         optimizer.zero_grad()
-        logits = model(input_seq)
-        loss = loss_function(logits, label_seq.squeeze(0))
+        logits, _ = model(input_seq)
+        loss = loss_function(logits[mask_idx, :], label_seq.squeeze(0)[mask_idx])
         loss.backward()
         optimizer.step()
 

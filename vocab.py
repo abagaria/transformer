@@ -33,7 +33,7 @@ class Vocab(object):
         return len(self.vocab.keys())
 
     def _create_vocab(self):
-        all_words = []
+        all_words = ["<MASK>"]
         for line in self.training_data:
             words = line.split()
             all_words += words

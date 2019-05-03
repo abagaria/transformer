@@ -34,8 +34,5 @@ class SingleHeadedAttention(nn.Module):
         embedding_matrix = embedding_matrix.squeeze(0)
 
         x = self.fc1(embedding_matrix) @ embedding_matrix.t()
-        mask = torch.tril(x)
-        mask = mask.masked_fill(mask == 0, -np.inf)
-        x = x + mask
         x = self.softmax(x) @ self.fc2(embedding_matrix)
         return x
