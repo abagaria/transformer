@@ -1,5 +1,4 @@
 # Python imports.
-from tqdm import tqdm
 import numpy as np
 import pdb
 
@@ -33,7 +32,7 @@ def compute_model_accuracy(model, loader, device, writer):
 
     model.eval()
 
-    for input_seq, label_seq, mask_idx in tqdm(loader):
+    for input_seq, label_seq, mask_idx in loader:
 
         # Move the data to the GPU
         input_seq = input_seq.to(device)

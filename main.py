@@ -2,7 +2,6 @@ import argparse
 import torch
 from train import train
 from hyperparameters import Hyperparameters
-from tensorboardX import SummaryWriter
 from evaluate import evaluate
 from utils import *
 from vocab import Vocab
@@ -20,7 +19,7 @@ def main():
 
     device = torch.device(args.device)
     hy = Hyperparameters()
-    writer = SummaryWriter() if args.tensor_log else None
+    writer = None # SummaryWriter() if args.tensor_log else None
     sentences = get_sentences(args.train_file)
     test_sentences = get_sentences(args.test_file)
 

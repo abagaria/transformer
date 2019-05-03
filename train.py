@@ -1,6 +1,5 @@
 # Python imports.
 import pdb
-from tqdm import tqdm
 import numpy as np
 
 # PyTorch imports.
@@ -29,7 +28,7 @@ def train(sentences, vocab, reverse_vocab, hy, writer, device):
 
     model.train()
 
-    for input_seq, label_seq, mask_idx in tqdm(loader):
+    for input_seq, label_seq, mask_idx in loader:
 
         # Move the data to the GPU
         input_seq = input_seq.to(device)
