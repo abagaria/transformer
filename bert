@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# project 4
+# bert
+
+train_file=$1
+test_file=$2
+stdout_file=$3
+
+#
+#   We will be running this script to grade your assignment. Note that failure
+# to run this program with this script will result in a 15% deduction in your
+# grade, regardless of if you provide other instructions on how to run your
+# program.
+#
+#   If you are having difficulty getting the script to run your program, talk
+# to the TAs.
+##############################################################################
+
+python -u main.py --device="cuda" --train_file=$train_file --test_file=$test_file | tee $stdout_file
+
+##############################################################################
+# Run this script with the command
+#
+#   ./bert penn-UNK-train.txt penn-UNK-test.txt out.txt
+
+
+
